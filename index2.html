@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Net</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #f4f4f4;
+      text-align: center;
+    }
+
+    /* الشريط العلوي */
+    .header {
+      width: 100%;
+      padding: 20px 0;
+      background: linear-gradient(90deg, #4fc3f7, #81d4fa);
+      color: #fff;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* الشبكة */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 20px auto;
+      padding: 10px;
+      width: 90%;
+    }
+
+    /* المربعات */
+    .grid-item {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      text-align: center;
+      font-size: 17px;
+      font-weight: bold;
+      color: #333;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .grid-item img {
+      width: 60%;
+      margin-bottom: 10px;
+    }
+
+    .grid-item:hover {
+      transform: scale(1.05);
+    }
+
+    /* أسماء الشركات */
+    .grid-item span {
+      display: block;
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    /* حقوق الملكية */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      padding: 10px 0;
+      background: #333;
+      color: #fff;
+      font-size: 14px;
+      text-align: center;
+    }
+
+  
+  </style>
+  <script>
+    function openPage(url) {
+      window.location.href = url;
+    }
+  </script>
+</head>
+<body>
+  <!-- الشريط العلوي -->
+  <div class="header">Home Net</div>
+
+  <!-- الشبكة -->
+  <div class="grid">
+    <div class="grid-item" onclick="openPage('index3.html')">
+      <img src="https://h.top4top.io/p_3269hj0oj0.jpeg" alt="فودافون ">
+      <span>فودافون</span>
+    </div>
+    <div class="grid-item" onclick="openPage('index4.html')">
+      <img src="https://f.top4top.io/p_3269e1jsh2.png" alt="اورانج">
+      <span>اورانج</span>
+    </div>
+    <div class="grid-item" onclick="openPage('index5.html')">
+      <img src="https://e.top4top.io/p_3269vd2n71.png" alt="اتصلات">
+      <span>اتصلات</span>
+    </div>
+    <div class="grid-item" onclick="openPage('index6.html')">
+      <img src="https://k.top4top.io/p_3269g7i4k3.jpg" alt="وي">
+      <span>وي</span>
+    </div>
+    <div class="grid-item" onclick="openPage('index7.html')">
+      <img src="https://e.top4top.io/p_3282ghb9e0.jpg" alt="بيع خطوط">
+      <span>بيع خطوط</span>
+    </div>
+    <div class="grid-item" onclick="openPage('index8.html')">
+      <img src="https://f.top4top.io/p_3282lisgu1.jpg" alt="تسجيل خطوط">
+      <span>تسجيل خطوط</span>
+    </div>
+  </div>
+
+
+  <!-- حقوق الملكية -->
+  <div class="footer">جميع الحقوق محفوظة أحمد سامي 2025 &copy;</div>
+</body>
+</html>
