@@ -3,51 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة التحكم</title>
-  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"></script>
+  <title>لوحة التحكم - إدارة المتجر</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Cairo', sans-serif;
+      background-color: #f9f9f9;
       text-align: center;
-      margin: 20px;
+      padding: 20px;
     }
 
-    form {
-      display: inline-block;
-      text-align: left;
-      margin-top: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 10px;
+    h1 {
+      color: #333;
       margin-bottom: 20px;
     }
 
-    button {
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+      display: inline-block;
+      text-align: left;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    form input, form select, form button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
       font-size: 16px;
     }
 
-    button:hover {
-      background-color: #45a049;
+    form button {
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    form button:hover {
+      background-color: #388e3c;
+    }
+
+    .product-list {
+      margin-top: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .product-item:last-child {
+      border-bottom: none;
+    }
+
+    .product-item button {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .product-item button:hover {
+      background-color: #d32f2f;
     }
   </style>
 </head>
 <body>
-  <h1>لوحة التحكم</h1>
-  <form id="add-product-form">
-    <label for="category">اختر الشركة:</label>
+  <h1>لوحة التحكم - إدارة المتجر</h1>
+
+  <form id="productForm">
+    <label for="number">رقم المنتج:</label>
+    <input type="text" id="number" placeholder="أدخل رقم المنتج" required>
+
+    <label for="price">السعر:</label>
+    <input type="text" id="price" placeholder="أدخل السعر" required>
+
+    <label for="category">الشركة:</label>
     <select id="category" required>
       <option value="vodafone">Vodafone</option>
       <option value="orange">Orange</option>
@@ -55,59 +105,83 @@
       <option value="we">WE</option>
     </select>
 
-    <label for="number">رقم الخط:</label>
-    <input type="text" id="number" placeholder="أدخل رقم الخط" required />
-
-    <label for="price">السعر:</label>
-    <input type="number" id="price" placeholder="أدخل السعر" required />
-
     <label for="image">رابط الصورة:</label>
-    <input type="text" id="image" placeholder="أدخل رابط الصورة" required />
+    <input type="text" id="image" placeholder="أدخل رابط الصورة" required>
 
     <button type="submit">إضافة المنتج</button>
   </form>
 
-  <script>
-    // تكوين Firebase
+  <div class="product-list" id="productList">
+    <h2>قائمة المنتجات</h2>
+    <!-- المنتجات ستظهر هنا -->
+  </div>
+
+  <script type="module">
+    // Import Firebase functions
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyCtRfaJisqxYWZ-RnwpKp_oAoNR1DOAtD4",
       authDomain: "ahmed-samy-703d8.firebaseapp.com",
-      databaseURL: "https://ahmed-samy-703d8-default-rtdb.firebaseio.com",
       projectId: "ahmed-samy-703d8",
       storageBucket: "ahmed-samy-703d8.appspot.com",
       messagingSenderId: "750583553196",
       appId: "1:750583553196:web:9682a66744a972ea569309",
-      measurementId: "G-PJWWR1CX6M"
+      databaseURL: "https://ahmed-samy-703d8-default-rtdb.firebaseio.com/"
     };
 
-    // تهيئة Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
 
-    // التعامل مع الفورم
-    document.getElementById('add-product-form').addEventListener('submit', (e) => {
+    // Add Product
+    const productForm = document.getElementById('productForm');
+    productForm.addEventListener('submit', (e) => {
       e.preventDefault();
-
-      // جلب البيانات من النموذج
-      const category = document.getElementById('category').value;
-      const number = document.getElementById('number').value;
-      const price = document.getElementById('price').value;
-      const image = document.getElementById('image').value;
-
-      // إضافة المنتج إلى قاعدة البيانات
-      const productRef = database.ref('products').push();
-      productRef.set({
-        category,
-        number,
-        price,
-        image
-      }).then(() => {
-        alert('تمت إضافة المنتج بنجاح');
-        document.getElementById('add-product-form').reset();
-      }).catch(error => {
-        console.error('حدث خطأ:', error);
-      });
+      const productId = Date.now(); // Unique ID for each product
+      const productData = {
+        number: document.getElementById('number').value,
+        price: document.getElementById('price').value,
+        category: document.getElementById('category').value,
+        image: document.getElementById('image').value,
+      };
+      set(ref(database, 'products/' + productId), productData)
+        .then(() => {
+          alert('تم إضافة المنتج بنجاح!');
+          productForm.reset();
+        })
+        .catch((error) => console.error('خطأ في الإضافة:', error));
     });
+
+    // Display Products
+    const productList = document.getElementById('productList');
+    const productsRef = ref(database, 'products');
+    onValue(productsRef, (snapshot) => {
+      const data = snapshot.val();
+      productList.innerHTML = '<h2>قائمة المنتجات</h2>';
+      if (data) {
+        for (const id in data) {
+          const product = data[id];
+          productList.innerHTML += `
+            <div class="product-item">
+              <span>${product.number} - ${product.price} - ${product.category}</span>
+              <button onclick="deleteProduct('${id}')">حذف</button>
+            </div>
+          `;
+        }
+      } else {
+        productList.innerHTML += '<p>لا توجد منتجات حالياً</p>';
+      }
+    });
+
+    // Delete Product
+    window.deleteProduct = (productId) => {
+      remove(ref(database, 'products/' + productId))
+        .then(() => alert('تم حذف المنتج بنجاح!'))
+        .catch((error) => console.error('خطأ في الحذف:', error));
+    };
   </script>
 </body>
 </html>
